@@ -1,0 +1,12 @@
+name: RulerPlugin
+main: com.rules.main.Main
+author: FEST_Channel
+version: 1.0.0
+commands:
+         zone:
+         isolator:
+         group:
+         report:
+         trial:
+         rank:
+api-version: 1.15
