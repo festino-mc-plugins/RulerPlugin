@@ -120,8 +120,10 @@ public class RulesFileManager {
 	
 	public static List<String> getFiles(String dir) {
 		File folder = new File(dir);
+		Logger.severe(""+folder.exists());
 		if (!folder.exists())
 			folder.mkdir();
+		Logger.severe(""+folder.exists());
 		
 		List<String> res = new ArrayList<>();
 		for (String path : folder.list())

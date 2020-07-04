@@ -10,8 +10,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,11 +26,13 @@ import com.rules.manage.Logger;
 import com.rules.utils.DelayedAlert;
 import com.rules.zones.CuboidZone;
 import com.rules.zones.Zone;
+
+import net.minecraft.server.v1_16_R1.PacketPlayOutWorldBorder;
+import net.minecraft.server.v1_16_R1.WorldBorder;
+
 import com.rules.utils.Serializable;
 import com.rules.utils.Utils;
 
-import net.minecraft.server.v1_15_R1.PacketPlayOutWorldBorder;
-import net.minecraft.server.v1_15_R1.WorldBorder;
 
 public class AlertManager implements Listener, Serializable {
 	private static final AlertManager instance = new AlertManager();
