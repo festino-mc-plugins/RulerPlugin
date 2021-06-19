@@ -29,14 +29,20 @@ public class RegroupCommand implements CommandExecutor {
 		Player senderPlayer = (Player) sender;
 		
 		if (args.length == 0) {
-			sender.sendMessage(ChatColor.RED + "Please enter nickname");
-			return false;
+			Group currentGroup = GroupManager.get().getEffectiveGroup(senderPlayer.getUniqueId());
+			sender.sendMessage(ChatColor.GREEN + "Your current group is \"" + currentGroup.getName() + "\".");
+			return true;
+			//sender.sendMessage(ChatColor.RED + "You have not permission.");
 		}
 		// rank <nickname> <groupname>
 		String name = args[0];
 		OfflinePlayer offplayer = Utils.getOfflinePlayer(name);
 		if (offplayer == null) {
 			sender.sendMessage(ChatColor.RED + "Couldn't find player \"" + name + "\".");
+			return false;
+		}
+		if (!offplayer.hasPlayedBefore()) {
+			sender.sendMessage(ChatColor.RED + "Player \"" + name + "\" hasn't played before.");
 			return false;
 		}
 		UUID uuid = offplayer.getUniqueId();
