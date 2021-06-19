@@ -10,8 +10,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,8 +27,9 @@ import com.rules.utils.DelayedAlert;
 import com.rules.zones.CuboidZone;
 import com.rules.zones.Zone;
 
-import net.minecraft.server.v1_16_R3.PacketPlayOutWorldBorder;
-import net.minecraft.server.v1_16_R3.WorldBorder;
+import net.minecraft.network.protocol.game.ClientboundInitializeBorderPacket;
+import net.minecraft.network.protocol.game.ClientboundSetBorderSizePacket;
+import net.minecraft.world.level.border.WorldBorder;
 
 import com.rules.utils.Serializable;
 import com.rules.utils.Utils;
@@ -123,23 +124,32 @@ public class AlertManager implements Listener, Serializable {
 	
 	public void showBorder(Player player, World world, Zone zone) {
 		if (zone == null || !zone.isComplete() || !(zone instanceof CuboidZone)) {
-	        showBorder(player, world, 0, 0, 59999968, PacketPlayOutWorldBorder.EnumWorldBorderAction.SET_SIZE);
+			setBorderSize(player, world, 0, 0, 59999968);
 			return;
 		}
 		CuboidZone cuboidZone = (CuboidZone) zone;
 		Location[] corners = cuboidZone.getMinMax(world);
 		double size = Math.max(corners[1].getX() - corners[0].getX(), corners[1].getZ() - corners[0].getZ());
 		Location center = corners[0].add(corners[1]).multiply(0.5);
-        showBorder(player, world, center.getX(), center.getZ(), size, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE);
+		initBorder(player, world, center.getX(), center.getZ(), size);
 	}
 	
-	private void showBorder(Player p, World world, double centerX, double centerZ, double size, PacketPlayOutWorldBorder.EnumWorldBorderAction action) {
+	private void initBorder(Player p, World world, double centerX, double centerZ, double size) {
 		WorldBorder worldBorder = new WorldBorder();
 		worldBorder.world = ((CraftWorld) world).getHandle();
         worldBorder.setCenter(centerX, centerZ);
 		worldBorder.setSize(size);
-        PacketPlayOutWorldBorder packetPlayOutWorldBorder = new PacketPlayOutWorldBorder(worldBorder, action);
-        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packetPlayOutWorldBorder);
+		ClientboundInitializeBorderPacket packetPlayOutWorldBorder = new ClientboundInitializeBorderPacket(worldBorder);
+        ((CraftPlayer) p).getHandle().b.sendPacket(packetPlayOutWorldBorder);
+	}
+	
+	private void setBorderSize(Player p, World world, double centerX, double centerZ, double size) {
+		WorldBorder worldBorder = new WorldBorder();
+		worldBorder.world = ((CraftWorld) world).getHandle();
+        worldBorder.setCenter(centerX, centerZ);
+		worldBorder.setSize(size);
+		ClientboundSetBorderSizePacket packetPlayOutWorldBorder = new ClientboundSetBorderSizePacket(worldBorder);
+        ((CraftPlayer) p).getHandle().b.sendPacket(packetPlayOutWorldBorder);
 	}
 	
 	private void save() {
