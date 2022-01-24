@@ -10,8 +10,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -140,7 +140,7 @@ public class AlertManager implements Listener, Serializable {
         worldBorder.setCenter(centerX, centerZ);
 		worldBorder.setSize(size);
 		ClientboundInitializeBorderPacket packetPlayOutWorldBorder = new ClientboundInitializeBorderPacket(worldBorder);
-        ((CraftPlayer) p).getHandle().b.sendPacket(packetPlayOutWorldBorder);
+        ((CraftPlayer) p).getHandle().connection.send(packetPlayOutWorldBorder);
 	}
 	
 	private void setBorderSize(Player p, World world, double centerX, double centerZ, double size) {
@@ -149,7 +149,7 @@ public class AlertManager implements Listener, Serializable {
         worldBorder.setCenter(centerX, centerZ);
 		worldBorder.setSize(size);
 		ClientboundSetBorderSizePacket packetPlayOutWorldBorder = new ClientboundSetBorderSizePacket(worldBorder);
-        ((CraftPlayer) p).getHandle().b.sendPacket(packetPlayOutWorldBorder);
+        ((CraftPlayer) p).getHandle().connection.send(packetPlayOutWorldBorder);
 	}
 	
 	private void save() {
